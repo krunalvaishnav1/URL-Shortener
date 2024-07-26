@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        text-align: center;
+      }
+
+      .input-field,
+      .shorten-btn,
+      .custom-alias {
+        width: 20rem;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      .shorten-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      .shortened-url {
+        background-color: #f8f9fa;
+        padding: 12px;
+        border: 1px solid #a3a1a1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .footer {
+        margin-top: 20px;
+      }
+
+      .copy-btn.copied {
+        background-color: #28a745;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th, td {
+        border: 1px solid #a3a1a1;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>URL Shortener</h1>
+    </header>
+    <main class="container">
+      <h2>Shorten Your URL</h2>
+      <form method="post" action="/url">
+        <input
+          type="text"
+          class="input-field"
+          name="url"
+          placeholder="Paste your Original URL here"
+        />
+        <button class="shorten-btn">Shorten URL</button>
+      </form>
+      <div class="shortened-url" id="shortened-url">
+        <span id="short-url">
+          <% if (locals.id) { %>
+            <div>http://localhost:8001/url/<%= id %></div>
+          <% } %>
+        </span>
+        <button class="copy-btn" id="copy-btn" onclick="copyURL()">Copy</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>ShortID</th>
+            <!-- <th>RedirectUrl</th> -->
+            <th>Clicks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (urls && urls.length) { %>
+            <% urls.forEach((url, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= url.shortId %></td>
+                <!-- <td><%= url.redirectUrl %></td> -->
+                <td><%= url.visiteHistory.length %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="3">No URLs found</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </main>
+
+    <script>
+      function copyURL() {
+        const url = document.getElementById("short-url").innerText;
+        navigator.clipboard.writeText(url).then(() => {
+          const copyBtn = document.getElementById("copy-btn");
+          copyBtn.classList.add("copied");
+          copyBtn.innerText = "Copied!";
+        });
+      }
+    </script>
+  </body>
+</html>
